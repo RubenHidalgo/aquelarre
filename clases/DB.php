@@ -171,6 +171,22 @@
             }
         }
 
+
+        public static function getGameId($id_game) {
+            $conexion = self::getConnection();
+            try {
+                $sql = $conexion->prepare("SELECT * FROM game WHERE id_game = ?");
+                if ($sql->execute(array($id_game))) {
+                    while ($row = $sql->fetch()) {
+                        $game = new Game($row);
+                    }
+                }
+                return $game;
+            } catch (PDOException $e) {
+                echo "ERROR: " . $e->getMessage();
+            }
+        }
+
         public static function getUsersGame($id_game) {
             $conexion = self::getConnection();
             try {
@@ -185,5 +201,21 @@
                 echo "ERROR: " . $e->getMessage();
             }
         }
+
+        public static function getGamesUser($id_user) {
+            $conexion = self::getConnection();
+            try {
+                $sql = $conexion->prepare("SELECT * FROM user_game WHERE id_user = ?");
+                if ($sql->execute(array($id_user))) {
+                    while ($row = $sql->fetch()) {
+                        $userGame[] = new UserGame($row);
+                    }
+                }
+                return $userGame;
+            } catch (PDOException $e) {
+                echo "ERROR: " . $e->getMessage();
+            }
+        }
+
     }
 ?>

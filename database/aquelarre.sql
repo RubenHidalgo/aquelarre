@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 13, 2019 at 12:22 PM
+-- Generation Time: Dec 13, 2019 at 10:38 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.3.8
 
@@ -59,11 +59,11 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `nick`, `pass`, `about`) VALUES
-(5, 'Pedro', 'reyes', 'No me gustan los juegos de rol, frikis.'),
-(6, 'Marc', 'gasol', 'Me gusta el vino y las mujeres.'),
-(7, 'Pepito', 'grillo', 'Soy de Valencia y me gusta el bacalao.'),
-(8, 'Carlos', 'sainz', 'Trato de arrancarlo.'),
-(9, 'berta', 'escobar', 'No tengo nada que decir');
+(5, 'Pedro', 'reyes', 'Humorista del absurdo, me gustan las partidas tranquilas.'),
+(6, 'Marc', 'gasol', 'Nací para rolear, también se me da bien el baloncesto.'),
+(7, 'Pepito', 'grillo', 'Soy de Valencia y a mis personajes les gusta el bacalao.'),
+(8, 'Carlos', 'sainz', 'Cuando juego voy a tope.'),
+(9, 'berta', 'escobar', 'Cuando no estoy viendo procesiones soy una bruja en Aquelarre.');
 
 -- --------------------------------------------------------
 
@@ -90,7 +90,10 @@ INSERT INTO `user_game` (`id_user_game`, `id_user`, `id_game`, `director`) VALUE
 (32, 8, 61, 0),
 (33, 5, 60, 0),
 (34, 5, 59, 0),
-(35, 7, 59, 0);
+(35, 7, 59, 0),
+(36, 6, 61, 0),
+(37, 9, 60, 0),
+(38, 8, 60, 0);
 
 --
 -- Indexes for dumped tables
@@ -136,7 +139,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_game`
 --
 ALTER TABLE `user_game`
-  MODIFY `id_user_game` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id_user_game` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Constraints for dumped tables

@@ -1,3 +1,6 @@
+<!-- Rubén Hidalgo González - Proyecto fin de ciclo -->
+
+
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -12,6 +15,9 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         
         <script type='text/javascript'>
+
+            //Mediante esta función vamos a controlar si los dos campos de password no coinciden
+            //En ese caso, desactivamos el botón de registro
             $(function () {
                 $('#psw-repeat').keyup(function () {
                     if ($(this).val() === $('#psw').val()) {
@@ -58,6 +64,7 @@
                 }
             }
 
+            //Si pulsamos el botón de registro, vamos a comprobar si el nick elegido ya existe para evitar o permitir el registro
             if (isset($_POST['registrar'])) {
                 $existe = false;
                 $usuarios = DB::getUsers();
@@ -108,6 +115,7 @@
         
         <div class="main">
             <?php
+            //Si existe el nick, mostramos un mensaje y no se lleva a cabo el registro
             if ($existe) {
                 echo "<p class='error'>El nombre de usuario ya existe. Prueba con otro.</p>";
             }

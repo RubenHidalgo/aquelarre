@@ -1,3 +1,5 @@
+<!-- Rubén Hidalgo González - Proyecto fin de ciclo -->
+
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -18,16 +20,19 @@
             
             session_start();
             
+            //Si el usuario se desloguea, liberamos la variable de sesión y mostramos el menú de login mediante $showLogin 
             if (isset($_POST['logout']) || (!isset($_SESSION['id']))) {
                 unset($_SESSION['id']);
                 $showLogin = true;
             }
 
+            //Cuando el usuario se loguea, recuperamos sus datos y comprobamos que el password es correcto.
             if (isset($_POST['login'])) {
                 $usuario = DB::getUser($_POST['user']);
                 if (count($usuario)==1) {
                     if ($usuario->getPass() == $_POST['password']) {
                         $showLogin = false;
+                        //Creamos la variable de sesión con el nick.
                         $_SESSION['id'] = $usuario->getNick();
                         header("Location: index.php");
                     }
@@ -35,6 +40,7 @@
                         $showLogin = true;
                     }
                 }
+                //Si el usuario no existe, lo mandamos a la página de registro.
                 else {
                     $showLogin = true;
                     header("Location: registro.php");
@@ -45,6 +51,7 @@
             <ul>
                 <li><a href="index.php">Inicio</a></li>
                 <?php
+                    //Si no hay usuario logueado, no cargamos las secciones del menú
                     if (isset($_SESSION['id'])) {
                         echo "<li><a href='jugar.php'>Jugar</a></li>";
                     }
@@ -73,7 +80,21 @@
         </nav>
         
         <div class="main">
-            
+            <?php
+                if (!isset($_SESSION['id'])) {
+                    echo '<div style="text-align: center;"><h4>¿Aún no tienes una cuenta?</h4>';
+                    echo '<p style="text-align: center; font-style: bold">¡Ya somos ';
+                    $usuarios = DB::getUsers();
+                    echo count($usuarios);
+                    echo ' usuarios registrados!<br><br>';
+                    $partidas = DB::getGames();
+                    echo 'Tenemos '.count($partidas)." partidas en marcha. ¡Regístrate y juega!</p></div>";
+                }
+                else {
+                    echo '<div style="text-align: center;"><h4>Bienvenido, '.$_SESSION['id'].'.</h4>';
+                    echo '<p style="text-align: center; font-style: bold">Accede a las partidas o a tu cuenta usando el menú superior.</p></div> ';
+                }
+            ?>
         </div>
     </body>
 </html>

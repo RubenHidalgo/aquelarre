@@ -1,3 +1,6 @@
+<!-- Rubén Hidalgo González - Proyecto fin de ciclo -->
+
+
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -13,6 +16,7 @@
 
         <script type='text/javascript'>
 
+            //Función para mostrar u ocultar los formularios al hacer click en los botones
             $(document).ready(function(){
                 $("#cambio-nick").hide();
                 $("#cambio-pass").hide();
@@ -37,6 +41,7 @@
                 });
             });
 
+            //Función para comprobar que los campos coinciden al cambiar el password
             $(function () {
                 $('#new-repeat').keyup(function () {
                     if ($(this).val() === $('#new').val()) {
@@ -80,8 +85,10 @@
                 }
             }
 
+            //Cargamos el objeto de tipo User logueado
             $usuario = DB::getUser($_SESSION['id']);
 
+            //Para cambiar el nick comprobamos primero que no exista en la BBDD
             if (isset($_POST['cambiar-nick'])) {
                 $existe = false;
                 $usuarios = DB::getUsers();
@@ -102,6 +109,7 @@
                 }
             }
 
+            //Cambiamos el password comprobando que ha introducido su password correctamente antes
             if (isset($_POST['cambiar-pass'])) {
                 
                 if ($usuario->getPass() != $_POST['old']) {
@@ -112,6 +120,7 @@
                 }
             }
 
+            //Cambiamos la descripción del usuario, se comprueba que no esté en blanco.
             if (isset($_POST['cambiar-about'])) {
                 
                 if ($_POST['about'] === '') {
@@ -122,6 +131,8 @@
                     $usuario = DB::getUser($_SESSION['id']);
                 }
             }
+
+            $partidas = DB::getGamesUser($usuario->getId_user());
         ?> 
         <nav class="menu">
             <ul>
@@ -148,14 +159,12 @@
         </nav>
         
         <div class="main">
-            <div class="row">
-                <div class="col-sm-8">
-                    <h2>Mis partidas</h2>
-                </div>
-                <div class="col-sm-4" id="columna-datos">
+
+                    <!-- Formularios para el cambio de datos que se mostrarán u ocultarán al hacer click el usuario -->
                     <h2>Mis datos</h2>
                     <p>Usuario: <?php echo $usuario->getNick() ?></p>
                     <p>Sobre mí: <?php echo $usuario->getAbout() ?></p>
+                    <p>Actualmente participando en <?php echo count($partidas); ?> partidas</p>
                     <p><button type="button" id="boton-nick">Cambiar nick</button>
                        <button type="button" id="boton-pass">Cambiar contraseña</button>
                        <button type="button" id="boton-about">Cambiar sobre mí</button></p>
@@ -191,7 +200,7 @@
                         </form>
                     </div>
                     <p></p>
-                </div>
+                
             </div>
         </div>
     </body>

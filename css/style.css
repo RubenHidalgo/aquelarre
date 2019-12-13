@@ -1,5 +1,8 @@
 body {
     margin: 0px;
+    background-image: url("../media/background.png");
+    background-size: 50%;
+    opacity: 1;
  }
 
 .menu {
@@ -53,12 +56,13 @@ body {
     margin-right: 5%;
 }
 
-#columna-datos {
+#columna-der {
     border-left: 3px solid #F2F7F9;
 }
 
-h2 {
-    text-align: center;
+#mantener {
+    
+    position: fixed;
 }
 
 #crea-partida {
@@ -162,4 +166,8 @@ h2 {
 .jugador:hover .jugador-desc {
     visibility: visible;
     opacity: 1;
+  }
+
+  #log {
+      padding-bottom: 50px;
   }

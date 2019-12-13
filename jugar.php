@@ -1,3 +1,6 @@
+<!-- Rubén Hidalgo González - Proyecto fin de ciclo -->
+
+
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -42,6 +45,13 @@
                 }
             }
 
+            //Si el usuario hace click en jugar, guardamos la partida en una variable de sesión y cargamos la partida.
+            if (isset($_POST['jugar'])) {
+                $_SESSION['id_game'] = $_POST['idpartida'];
+                header("Location: partida.php");
+            }
+
+            //Creamos una nueva partida si el usuario hace click
             if (isset($_POST['crea-partida'])) {
                 DB::setGame($_POST['nombre'], $_POST['desc']);
                 $usuario = DB::getUser($_SESSION['id']);
@@ -49,12 +59,14 @@
                 DB::setUserGame($usuario->getId_user(), $partida->getId_game(), "1");
             }
 
+            //Esta función une al usuario a una partida en curso
             if (isset($_POST['unirse'])) {
                 $usuario = DB::getUser($_SESSION['id']);
 
                 DB::setUserGame($usuario->getId_user(),$_POST['idpartida'], 0);
             }
 
+            //Cargamos la lista de partidas
             $partidas = DB::getGames();
         ?> 
         <nav class="menu">
@@ -93,11 +105,16 @@
                 <div class="col-sm-8">
                     <h3>Lista de partidas</h3>
                     <?php 
+                        //Recorremos la lista de partidas creadas
                         foreach ($partidas as $part) {
                             $userGame = DB::getUsersGame($part->getId_game());
                             $yaunido = false;
+                            $countPlayers = 0; //Cuenta de los jugadores que hay en cada partida
+
                             echo '<div class="gamebox"><h4>'.$part->getNameg().'</h4><p class="about">'.$part->getAbout().'</p><br>
                                  Director de juego: ';
+                            
+                            //Comprobamos qué usuario es el director de juego
                             foreach ($userGame as $user) {
                                 if ($user->getDirector() == 1) {
                                     $countPlayers++;
@@ -107,15 +124,17 @@
                             }
                             echo '<br><br>'; 
                             echo '<div>Participantes: ';
-                            $countPlayers = 0;
+                            //Comprobamos ahora los jugadores, y seguimos aumentando el contador
                             foreach ($userGame as $user) {
-                                $countPlayers++;
                                 if ($user->getDirector() == 0) {
+                                    $countPlayers++;
                                     $usuario = DB::getUserId($user->getId_user());
                                     echo '<div class="jugador">'.$usuario->getNick().' '.'<span class="jugador-desc">'.$usuario->getAbout().'</span></div>';
                                 }
                             }
 
+                            //Cargamos los datos del usuario logueado, y comprobamos si ya está unido a una partida. De esta forma, más abajo 
+                            //desactivamos el botón para unirse
                             $userLogged = DB::getUser($_SESSION['id']);
                             
                             foreach ($userGame as $user) {
@@ -124,20 +143,21 @@
                                 }
                             }
                             
-
+                            //Si hay menos de 4 jugadores y el jugador no se ha unido, activamos el botón de unirse
                             if (($countPlayers < 4) && (!$yaunido)) {
                                 
                                 echo '<form method = "POST">
-                                    <input type="hidden" name="idpartida" value="'.$part->getId_game().'" id="boton-unir"></input>
+                                    <input type="hidden" name="idpartida" value="'.$part->getId_game().'"></input>
                                     <input type="submit" name="unirse" value="Unirse" id="boton-unir"></input>
                                     </form>';
                                 
                             }
-                            else if (($countPlayers < 4) && ($yaunido)) {
-                                echo "<br><br><p style='font-style: italic; color: red;'>Ya estás inscrito en esta partida</p>";
-                            }
-                            else {
-                                echo "<br><br><p style='font-style: italic; color: red;'>Cupo de jugadores completo</p>";
+                            //Si el jugador se ha unido y hay 4 jugadores, activamos el botón para jugar a la partida
+                            else if (($countPlayers == 4) && ($yaunido)) {
+                                echo '<form method = "POST">
+                                    <input type="hidden" name="idpartida" value="'.$part->getId_game().'"></input>
+                                    <input type="submit" name="jugar" value="Jugar" id="boton-jugar"></input>
+                                    </form>';
                             }
                             echo '</div>';
                             echo '</div>';
@@ -145,7 +165,8 @@
                     ?>
                 </div>
                 <div class="col-sm-4" id="crea-partida">
-                    
+                        
+                        <!-- Formulario para crear una partida -->
                         <h4>Crea una partida</h4>
                         <br><br>
                         <form method="POST">
