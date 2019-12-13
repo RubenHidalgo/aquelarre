@@ -5,7 +5,7 @@ body {
 .menu {
     overflow: hidden;
     background-color: #404040;
-    position: fixed;
+    position: absolute;
     top: 0;
     width: 100%;
     height: 120px;
@@ -40,6 +40,11 @@ body {
 .right {
     float: right;
     padding-right: 40px;
+    padding-top: 20px;
+}
+
+.left {
+    padding-top: 20px;
 }
 
 .main {
@@ -47,3 +52,114 @@ body {
     margin-left: 5%;
     margin-right: 5%;
 }
+
+#columna-datos {
+    border-left: 3px solid #F2F7F9;
+}
+
+h2 {
+    text-align: center;
+}
+
+#crea-partida {
+    border-left: 3px solid #F2F7F9;
+}
+
+.gamebox {
+    margin-top: 30px;
+    padding: 10px;
+    margin-bottom: 30px;
+    border-top: 2px solid black;
+}
+
+.about {
+    font-style: italic;
+}
+
+.director {
+    color: blueviolet;
+    position: relative;
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.director .director-desc {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+      
+.director .director-desc::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.director:hover .director-desc {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  #boton-unir {
+      margin-top: 20px;
+  }
+
+  input, label {
+    display:block;
+}
+
+.jugador {
+    color: lightsalmon;
+    position: relative;
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.jugador .jugador-desc {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+      
+.jugador .jugador-desc::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.jugador:hover .jugador-desc {
+    visibility: visible;
+    opacity: 1;
+  }

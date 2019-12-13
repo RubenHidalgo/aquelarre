@@ -5,17 +5,62 @@
         <title>Aquelarr-e</title>
         <meta name="description" content="Tu mesa de rol virtual ">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="css/style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+        <script type='text/javascript'>
+
+            $(document).ready(function(){
+                $("#cambio-nick").hide();
+                $("#cambio-pass").hide();
+                $("#cambio-about").hide();
+
+                $("#boton-pass").click(function(){
+                    $("#cambio-pass").show();
+                    $("#cambio-nick").hide();
+                    $("#cambio-about").hide();
+                });
+
+                $("#boton-nick").click(function(){
+                    $("#cambio-pass").hide();
+                    $("#cambio-nick").show();
+                    $("#cambio-about").hide();
+                });
+
+                $("#boton-about").click(function(){
+                    $("#cambio-pass").hide();
+                    $("#cambio-nick").hide();
+                    $("#cambio-about").show();
+                });
+            });
+
+            $(function () {
+                $('#new-repeat').keyup(function () {
+                    if ($(this).val() === $('#new').val()) {
+                        $('#nocoincide').text('');
+                        $('#cambiar-pass').prop('disabled', false);
+                    } 
+                    else {
+                        $('#nocoincide').text('Las contraseñas no coinciden.');
+                        $('#cambiar-pass').prop('disabled', true);
+                    }
+                });
+            });
+        </script>
+
     </head>
     <body>
         <?php
             require_once 'clases/DB.php';
             
             session_start();
-            
+
             if (isset($_POST['logout']) || (!isset($_SESSION['id']))) {
                 unset($_SESSION['id']);
-                $showLogin = true;
+                header("Location: index.php");
             }
 
             if (isset($_POST['login'])) {
@@ -24,7 +69,6 @@
                     if ($usuario->getPass() == $_POST['password']) {
                         $showLogin = false;
                         $_SESSION['id'] = $usuario->getNick();
-                        header("Location: index.php");
                     }
                     else {
                         $showLogin = true;
@@ -33,6 +77,49 @@
                 else {
                     $showLogin = true;
                     header("Location: registro.php");
+                }
+            }
+
+            $usuario = DB::getUser($_SESSION['id']);
+
+            if (isset($_POST['cambiar-nick'])) {
+                $existe = false;
+                $usuarios = DB::getUsers();
+
+                foreach ($usuarios as $user) {
+                    if ($user->getNick() == $_POST['nick']) {
+                        $existe = true;
+                    }
+                }
+
+                if ($existe) {
+                    echo '<script type="text/javascript">alert("El nick elegido ya está siendo utilizado!");</script>';
+                }
+                else {
+                    DB::setNick($_SESSION['id'], $_POST['nick']);
+                    $_SESSION['id'] = $_POST['nick'];
+                    $usuario = DB::getUser($_POST['nick']);
+                }
+            }
+
+            if (isset($_POST['cambiar-pass'])) {
+                
+                if ($usuario->getPass() != $_POST['old']) {
+                    echo '<script type="text/javascript">alert("El password no es correcto");</script>';
+                }
+                else {
+                    DB::setPass($usuario->getNick(), $_POST['new']);
+                }
+            }
+
+            if (isset($_POST['cambiar-about'])) {
+                
+                if ($_POST['about'] === '') {
+                    echo '<script type="text/javascript">alert("No dejes la descripción en blanco");</script>';
+                }
+                else {
+                    DB::setAbout($usuario->getNick(), $_POST['about']);
+                    $usuario = DB::getUser($_SESSION['id']);
                 }
             }
         ?> 
@@ -51,7 +138,7 @@
                                 echo "<li><input type='submit' name ='login' value='Acceso/Registro'></li>";
                             }
                             else {
-                                echo "<li>Bienvenido, ".$_SESSION['id']."</li>";
+                                echo "<li><p style='color:white;padding-right:10px;'>Bienvenido, ".$_SESSION['id']."</p></li>";
                                 echo "<li><input type='submit' name='logout' value='Desconectar'></li>";
                             }
                         ?>
@@ -61,11 +148,51 @@
         </nav>
         
         <div class="main">
-            <?php
-                echo "usuario".$_POST['user'];
-                echo "pass".$_POST['password'];
-                echo "sesion".$_SESSION['id'];
-            ?> 
+            <div class="row">
+                <div class="col-sm-8">
+                    <h2>Mis partidas</h2>
+                </div>
+                <div class="col-sm-4" id="columna-datos">
+                    <h2>Mis datos</h2>
+                    <p>Usuario: <?php echo $usuario->getNick() ?></p>
+                    <p>Sobre mí: <?php echo $usuario->getAbout() ?></p>
+                    <p><button type="button" id="boton-nick">Cambiar nick</button>
+                       <button type="button" id="boton-pass">Cambiar contraseña</button>
+                       <button type="button" id="boton-about">Cambiar sobre mí</button></p>
+                    <div id="cambio-nick">
+                        <form method="POST">
+                            <label for="nick"><b>Nuevo nick</b></label>
+                            <input type="text" name="nick" required>
+                            <br><br>
+                            <button type="submit" name="cambiar-nick">Cambiar</button>
+                        </form>
+                    </div>
+                    <div id="cambio-pass">
+                        <form method="POST">
+                            <label for="old"><b>Contraseña actual</b></label>
+                            <input type="password" name="old" required>
+                            <br><br>
+                            <label for="new"><b>Contraseña nueva</b></label>
+                            <input type="password" name="new" id="new" required>
+                            <br><br>
+                            <label for="new-repeat"><b>Repite contraseña</b></label>
+                            <input type="password" name="new-repeat" id="new-repeat" required>
+                            <br><br>
+                            <button type="submit" name="cambiar-pass" id="cambiar-pass" disabled='disabled'>Cambiar</button>
+                            <p id="nocoincide"></p>
+                        </form>
+                    </div>
+                    <div id="cambio-about">
+                        <form method="POST">
+                            <label for="about"><b>Nuevo Sobre mí</b></label>
+                            <input type="text" name="about" required>
+                            <br><br>
+                            <button type="submit" name="cambiar-about">Cambiar</button>
+                        </form>
+                    </div>
+                    <p></p>
+                </div>
+            </div>
         </div>
     </body>
 </html>

@@ -6,14 +6,20 @@
         <meta name="description" content="Tu mesa de rol virtual ">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         
         <script type='text/javascript'>
             $(function () {
                 $('#psw-repeat').keyup(function () {
                     if ($(this).val() === $('#psw').val()) {
                         $('#activar').prop('disabled', false);
+                        $('#nocoincide').hide();
                     } 
                     else {
+                        $('#nocoincide').text('Las contraseñas no coinciden.');
                         $('#activar').prop('disabled', true);
                     }
                 });
@@ -72,19 +78,26 @@
         <nav class="menu">
             <ul>
                 <li><a href="index.php">Inicio</a></li>
-                <li><a href="jugar.php">Jugar</a></li>
-                <li><a href="cuenta.php">Mi cuenta</a></li>
+                <?php
+                    if (isset($_SESSION['id'])) {
+                        echo "<li><a href='jugar.php'>Jugar</a></li>";
+                    }
+                
+                    if (isset($_SESSION['id'])) {
+                        echo "<li><a href='cuenta.php'>Mi cuenta</a></li>";
+                    }
+                ?>
                 <li><img src="media/logo.png" alt="Logo Aquelarre" id="logo"></li>
                 <div class="right">
                     <form method="post">
                         <?php
                             if ($showLogin) {
                                 echo "<li><input type='text' name='user' placeholder='Usuario'></li>";
-                                echo "<li><input type='text' name='password' placeholder='Contraseña'></li>";
+                                echo "<li><input type='password' name='password' placeholder='Contraseña'></li>";
                                 echo "<li><input type='submit' name ='login' value='Acceso/Registro'></li>";
                             }
                             else {
-                                echo "<li>Bienvenido, ".$_SESSION['id']."</li>";
+                                echo "<li><p style='color:white;padding-right:10px;'>Bienvenido, ".$_SESSION['id']."</p></li>";
                                 echo "<li><input type='submit' name='logout' value='Desconectar'></li>";
                             }
                         ?>
@@ -112,7 +125,7 @@
                     <br><br>
                     <label for="psw-repeat"><b>Repite contraseña</b></label>
                     <input type="password" placeholder="Repite contraseña" name="psw-repeat" id="psw-repeat" required>
-                    <p id="nocoincide">La contraseña no coincide</p>
+                    <p id="nocoincide"></p>
                     <br><br>
                     <label for="about"><b>Háblanos sobre ti</b></label>
                     <input type="text" placeholder="Cuéntanos qué tipo de jugador eres" name="about" required>
