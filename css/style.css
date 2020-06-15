@@ -1,8 +1,21 @@
+
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Oswald&display=swap');
 body {
     margin: 0px;
     background-image: url("../media/background.png");
     background-size: 50%;
     opacity: 1;
+    font-family: 'EB Garamond', serif;
+    font-size: large;
+ }
+
+ body h1, h2, h3, h4 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 150%;
+ }
+
+ body nav {
+    font-family: 'Oswald', sans-serif;
  }
 
 .menu {
@@ -51,7 +64,7 @@ body {
 }
 
 .main {
-    margin-top: 150px;
+    margin-top: 30px;
     margin-left: 5%;
     margin-right: 5%;
 }
@@ -171,3 +184,56 @@ body {
   #log {
       padding-bottom: 50px;
   }
+
+  .centrar {
+    margin: 0 auto;
+    width:25% /* value of your choice which suits your alignment */
+}
+
+.masthead {
+    height: 100vh;
+    max-height: 600px;
+    background-image: url('../media/banner.jpg');
+    opacity: 0.8;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .titulo {
+      font-size: 500%;
+      color: white;
+      text-shadow: 3px 5px 2px #000000, 13px 9px 3px rgba(0,0,0,0.12);
+  }
+
+  .subtitulo {
+    font-size: 250%;
+    font-style: italic;
+    color: white;
+    border-radius: 20px;
+    padding: 10px;
+    text-shadow: 1px 5px 5px black;
+    ;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 40px;
+    line-height: 40px; /* Vertically center the text there */
+    opacity: 0.9;
+    background-color: brown;
+}
+
+.footer span {
+    text-align: center;
+    font-weight: bold;
+    color: white;
+}
+
+.navbar {
+    padding-left: 7%;
+    padding-right: 7%;
+}

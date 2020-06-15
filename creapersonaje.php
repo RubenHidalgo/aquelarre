@@ -14,38 +14,7 @@
         <link rel="stylesheet" href="css/style.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        
-        <script type='text/javascript'>
-
-            //Mediante esta función vamos a controlar si los dos campos de password no coinciden
-            //En ese caso, desactivamos el botón de registro
-            $(function () {
-                $('#psw-repeat').keyup(function () {
-                    if ($(this).val() === $('#psw').val()) {
-                        $('#activar').prop('disabled', false);
-                        $('#nocoincide').hide();
-                    } 
-                    else {
-                        $('#nocoincide').show();
-                        $('#activar').prop('disabled', true);
-                    }
-                });
-            }); 
-            $(function () {
-                $('#psw').keyup(function () {
-                    if ($(this).val() === $('#psw-repeat').val()) {
-                        $('#activar').prop('disabled', false);
-                        $('#nocoincide').hide();
-                    } 
-                    else {
-                        $('#nocoincide').show();
-                        $('#activar').prop('disabled', true);
-                    }
-                });
-            });
-        </script>
-
-        <link rel="stylesheet" href="css/style.css">
+        <script>alert($_POST['playerName']);</script>
     </head>
     <body>
     
@@ -61,21 +30,27 @@
 
             //Si pulsamos el botón de registro, vamos a comprobar si el nick elegido ya existe para evitar o permitir el registro
             if (isset($_POST['registrar'])) {
-                $existe = false;
-                $usuarios = DB::getUsers();
-
-                foreach ($usuarios as $user) {
-                    if ($user->getNick() == $_POST['usuario']) {
-                        $existe = true;
-                    }
+                $usuario = DB::getUser($_SESSION['id']);
+                $partida = DB::getGameId($_SESSION['id_game']);
+                $clase = $_POST['clase'];
+                $playerName = $_POST['playerName'];
+                if ($clase == "guerrera") {
+                    $clase = 1;
+                    $vida = 30;
+                    DB::setUserGame($usuario->getId_user(), $partida->getId_game(), 0, $clase, 1, $vida, $playerName);
+                    header("Location: partida.php");
                 }
-                
-                if (!$existe) {
-                    $nickuser = mb_strtolower($_POST['usuario'], 'UTF-8'); 
-                    DB::setUser($nickuser, $_POST['psw'], $_POST['about']);
-                    $_SESSION['id'] = $nickuser;
-                    DB::setLog($nickuser);
-                    header("Location: index.php");
+                else if ($clase == "ladron") {
+                    $clase = 2;
+                    $vida = 20;
+                    DB::setUserGame($usuario->getId_user(), $partida->getId_game(), 0, $clase, 1, $vida, $playerName);
+                    header("Location: partida.php");
+                }
+                else {
+                    $clase = 3;
+                    $vida = 15;
+                    DB::setUserGame($usuario->getId_user(), $partida->getId_game(), 0, $clase, 1, $vida, $playerName);
+                    header("Location: partida.php");
                 }
             }
         ?> 
@@ -138,40 +113,46 @@
         </nav>
         
         <div class="main">
-
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    
+                    <h3>Crea tu personaje</h3>
+                    <hr>
+                    <br><br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form method="post" class="centrar"> 
+                    
+                </div>
+            </div>           
             <form method="post" class="centrar">
                 <img src="media/LogoAquelarre.gif" class="rounded mx-auto d-block" alt="...">
                 <br><br>
-                <div class="alert alert-danger" id="nocoincide">
-                    <p>Las contraseñas no coinciden</p>
-                </div>
-                <h1>Formulario de registro</h1>
-                <p>Regístrate para empezar a jugar</p>
-                <hr>
                 <div class="form-group" >
-                    <label for="userName" >Nombre de usuario</label>
-                    <input type="text"  class="form-control" id="userName" aria-describedby="userHelp" name="usuario" placeholder="Introduce tu nombre de usuario" required>
+                    <label for="playerName" >Nombre de personaje</label>
+                    <input type="text"  class="form-control" id="playerName" aria-describedby="userHelp" name="playerName" placeholder="Pon un nombre a tu personaje" required>
                 </div>
                 <div class="form-group">
-                    <label for="psw">Contraseña</label>
-                    <input type="password" class="form-control" id="psw" aria-describedby="passwordHelp" name="psw" placeholder="Introduce tu contraseña" required>
-                </div>
-                <div class="form-group">
-                    <label for="psw-repeat">Contraseña</label>
-                    <input type="password" class="form-control" id="psw-repeat" aria-describedby="passwordHelp" name="psw-repeat" placeholder="Repite tu contraseña" required>
-                </div>
-                <div class="form-group">
-                    <label for="about">Descripción</label>
-                    <textarea type="text" class="form-control" id="about"  name="about" placeholder="Cuenta algo de ti (máximo 300 caracteres)" maxlength="300" rows="4" required></textarea>
+                    <label for="clase">Clase de personaje</label>
+                    <select class="form-control" name="clase" id="clase" required>
+                    <option value="guerrera">Guerrera</option>
+                    <option value="ladron">Ladrón</option>
+                    <option value="brujo">Brujo</option>
+                    </select>
                 </div>
                 <div class="form-check" style="float: right;">
                     <input type="checkbox" class="form-check-input" id="terms" required>
-                    <label class="form-check-label" for="terms">Acepto los términos de uso</label>
+                    <label class="form-check-label" for="terms">¡Estoy listo para continuar!</label>
                 </div>
                 <br><br>
-                <button type="submit" class="btn btn-primary" name="registrar" id="activar" disabled='disabled' style="float: right;">Registrarse</button>
+                <button type="submit" class="btn btn-primary" name="registrar" id="registrar" style="float: right;">Crear personaje</button>
             </form>
-            
+                
+                
+        </div>    
         </div>
     </body>
 </html>

@@ -10,6 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/style.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -104,6 +105,7 @@
                 }
                 else {
                     DB::setNick($_SESSION['id'], $_POST['nick']);
+                    DB::setLogNick($_SESSION['id'], $_POST['nick']);
                     $_SESSION['id'] = $_POST['nick'];
                     $usuario = DB::getUser($_POST['nick']);
                 }
@@ -134,48 +136,110 @@
 
             $partidas = DB::getGamesUser($usuario->getId_user());
         ?> 
-        <nav class="menu">
-            <ul>
-                <li><a href="index.php">Inicio</a></li>
-                <li><a href="jugar.php">Jugar</a></li>
-                <li><a href="cuenta.php">Mi cuenta</a></li>
-                <li><img src="media/logo.png" alt="Logo Aquelarre" id="logo"></li>
-                <div class="right">
-                    <form method="post">
-                        <?php
-                            if ($showLogin) {
-                                echo "<li><input type='text' name='user' placeholder='Usuario'></li>";
-                                echo "<li><input type='text' name='password' placeholder='Contraseña'></li>";
-                                echo "<li><input type='submit' name ='login' value='Acceso/Registro'></li>";
-                            }
-                            else {
-                                echo "<li><p style='color:white;padding-right:10px;'>Bienvenido, ".$_SESSION['id']."</p></li>";
-                                echo "<li><input type='submit' name='logout' value='Desconectar'></li>";
-                            }
-                        ?>
-                    </form>
-                </div>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+            <a class="navbar-brand" href="index.php">AQUELARRE</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.php">Inicio <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                <?php
+                    //Si no hay usuario logueado, no cargamos las secciones del menú
+                    if (isset($_SESSION['id'])) {
+                        $username = $_SESSION['id'];
+                        if ($username === 'admin') {
+
+                        }
+                        else {
+                            echo '<a class="nav-link" href="jugar.php">Jugar</a>';
+                        }
+                    }
+                ?>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">FAQ</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <?php
+                        echo '<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                        if ((isset($_SESSION['id'])) && ($_SESSION['id'] !== 'admin')) {
+                            echo $_SESSION['id'].'</a>';
+                            echo '<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">';
+                            echo '<a class="dropdown-item" href="cuenta.php">Cuenta</a>';
+                            echo '<a class="dropdown-item"><form method="post"><input type="submit" name="logout" value="Cerrar sesión"></form></a>';
+                            echo '</div>';
+                        }
+                        else if ((isset($_SESSION['id'])) && (strcmp($_SESSION['id'],'admin')) === 0) {
+                            echo $_SESSION['id'].'</a>';
+                            echo '<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">';
+                            echo '<a class="dropdown-item" href="panel.php">Panel de control</a>';
+                            echo '<a class="dropdown-item"><form method="post"><input type="submit" name="logout" value="Cerrar sesión"></form></a>';
+                            echo '</div>';
+                        }
+                        else {
+                            echo 'Usuario'.'</a>';
+                            echo '<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">';
+                            echo '<a class="dropdown-item" href="login.php">Identificarse</a>';
+                            echo '<a class="dropdown-item" href="registro.php">Registrarse</a>';
+                            echo '</div>';
+                        }
+                    ?>
+                    
+                </li>
+                </ul>
+            </div>
         </nav>
         
         <div class="main">
-
+            <div class="container">
+                <div class="row">    
                     <!-- Formularios para el cambio de datos que se mostrarán u ocultarán al hacer click el usuario -->
+                    <div class="col">
                     <h2>Mis datos</h2>
-                    <p>Usuario: <?php echo $usuario->getNick() ?></p>
-                    <p>Sobre mí: <?php echo $usuario->getAbout() ?></p>
+                    </div>
+                    <div class="col">
                     <p>Actualmente participando en <?php echo count($partidas); ?> partidas</p>
-                    <p><button type="button" id="boton-nick">Cambiar nick</button>
-                       <button type="button" id="boton-pass">Cambiar contraseña</button>
-                       <button type="button" id="boton-about">Cambiar sobre mí</button></p>
+                    </div>
+                    <div class="col">
+                    <button class="btn btn-secondary btn-lg justify-content-center">
+                        <a href="index.php?userdeleted=<?php echo $usuario->getId_user(); ?>"
+                        onclick="return confirm('¿Estás seguro de eliminar tu cuenta? También se borrará cualquier partida que hayas creado.');">Eliminar cuenta</a>
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm">
+                    <p>Usuario:<br> <?php echo $usuario->getNick() ?></p>
+                    <p><button class="btn btn-secondary" type="button" id="boton-nick">Cambiar nick</button>
                     <div id="cambio-nick">
                         <form method="POST">
                             <label for="nick"><b>Nuevo nick</b></label>
                             <input type="text" name="nick" required>
                             <br><br>
-                            <button type="submit" name="cambiar-nick">Cambiar</button>
+                            <button class="btn btn-primary" type="submit" name="cambiar-nick">Cambiar</button>
                         </form>
                     </div>
+                    </div>
+                    <div class="col-sm">
+                    <p>Sobre mí:<br> <?php echo $usuario->getAbout() ?></p>
+                    <button class="btn btn-secondary" type="button" id="boton-about">Cambiar sobre mí</button></p>
+                    <div id="cambio-about">
+                        <form method="POST">
+                            <label for="about"><b>Nuevo Sobre mí</b></label>
+                            <input type="text" name="about" required>
+                            <br><br>
+                            <button class="btn btn-primary" type="submit" name="cambiar-about">Cambiar</button>
+                        </form>
+                    </div>
+                    </div>
+                    <div class="col-sm">
+                    <p>Contraseña:<br> ********* </p>
+                    <button class="btn btn-secondary" type="button" id="boton-pass">Cambiar contraseña</button>
                     <div id="cambio-pass">
                         <form method="POST">
                             <label for="old"><b>Contraseña actual</b></label>
@@ -187,20 +251,18 @@
                             <label for="new-repeat"><b>Repite contraseña</b></label>
                             <input type="password" name="new-repeat" id="new-repeat" required>
                             <br><br>
-                            <button type="submit" name="cambiar-pass" id="cambiar-pass" disabled='disabled'>Cambiar</button>
+                            <button class="btn btn-primary" type="submit" name="cambiar-pass" id="cambiar-pass" disabled='disabled'>Cambiar</button>
                             <p id="nocoincide"></p>
                         </form>
                     </div>
-                    <div id="cambio-about">
-                        <form method="POST">
-                            <label for="about"><b>Nuevo Sobre mí</b></label>
-                            <input type="text" name="about" required>
-                            <br><br>
-                            <button type="submit" name="cambiar-about">Cambiar</button>
-                        </form>
                     </div>
-                    <p></p>
-                
+                    </div>
+                    
+                </div>
+            </div>
+                    
+                    
+                    
             </div>
         </div>
     </body>

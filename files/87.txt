@@ -1,0 +1,35 @@
+
+
+Director tira un dado de 100. Resultado: 32
+
+Director tira un dado de 10. Resultado: 6
+
+Petra tira un dado de 100. Resultado: 36
+
+Petra tira un dado de 10. Resultado: 4
+
+Petra: Venga empezamos cuando queráis
+
+Petra tira un dado de 100. Resultado: 14
+
+Víbora: Que tal
+
+Víbora tira un dado de 100. Resultado: 82
+
+Víbora: Bueno pues nada cuando queráis
+
+Petra: Está bien, master, donde estamos?
+
+Petra tira un dado de 100. Resultado: 78
+
+Petra tira un dado de 100. Resultado: 33
+
+Petra tira un dado de 10. Resultado: 6
+
+Petra tira un dado de 100. Resultado: 60
+
+asdasd: Hola a todos
+
+asdasd tira un dado de 10. Resultado: 2
+
+Petra: Vaya nombre te has puesto asdasd
